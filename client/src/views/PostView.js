@@ -6,7 +6,7 @@ import CommentSection from "../components/CommentSection.js";
 const PostView = () => {
   return (
     <div>
-      <Header location="Home" />
+      <Header location="Post" />
       <Post />
       <CommentSection />
     </div>

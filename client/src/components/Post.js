@@ -25,18 +25,29 @@ const useStyles = makeStyles({
   desc: {
     paddingTop: 0,
   },
+  padding: {
+    padding: "4px",
+  },
+  margin: {
+    marginBottom: "20px",
+  },
 });
 
 const Post = () => {
   const classes = useStyles();
 
   return (
-    <Box>
+    <Box className={classes.margin}>
       <Container maxWidth="sm">
         <Card>
-          <CardActions>
+          <CardActions className={classes.padding}>
             <Button size="medium" color="primary">
               Title
+            </Button>
+          </CardActions>
+          <CardActions className={classes.padding}>
+            <Button size="small" color="secondary">
+              Author
             </Button>
           </CardActions>
           <CardContent className={classes.desc}>
