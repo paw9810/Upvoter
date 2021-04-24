@@ -1,9 +1,9 @@
 const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model {}
+  class Post extends Model {}
 
-  User.init(
+  Post.init(
     {
       id: {
         type: DataTypes.INTEGER,
@@ -12,33 +12,26 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
         allowNull: false,
       },
-      name: {
-        type: DataTypes.STRING(255),
-        unique: true,
-        allowNull: false,
-      },
-      password: {
+      title: {
         type: DataTypes.STRING(255),
         allowNull: false,
       },
-      karma: {
+      tags: {
+        type: DataTypes.STRING(255),
+      },
+      rating: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
     },
     {
       sequelize,
-      modelName: "user",
+      modelName: "post",
     }
   );
-  User.associate = (models) => {
-    User.hasMany(models.post, {
-      foreignKey: {
-        allowNull: false,
-      },
-    });
-    User.belongsToMany(models.post, { through: models.vote });
+  Post.associate = (models) => {
+    Post.belongsTo(models.user);
+    Post.belongsToMany(models.user, { through: models.vote });
   };
-
-  return User;
+  return Post;
 };

@@ -18,6 +18,6 @@ app.use((req, res) => {
   res.status(404).send("404: page not found");
 });
 
-db.sequelize.sync().then(() => {
+db.sequelize.sync({ force: true }).then(() => {
   app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
 });
