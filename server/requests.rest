@@ -1,0 +1,19 @@
+GET http://localhost:5000/users/all
+
+###
+POST http://localhost:5000/auth/login
+Content-Type: : application/json
+
+{
+  "name": "testuser",
+  "password": "123"
+}
+
+###
+POST http://localhost:5000/auth/refresh
+Content-Type: : application/json
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjIxNTk4Njk5LCJleHAiOjE2MjIxMjQyOTl9.xXgjSgrEx4uImr4rWjK5i7xtvH8JjYlQ_11cqsYAUKM"
+}
+
