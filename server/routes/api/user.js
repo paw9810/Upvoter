@@ -1,9 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../../models");
+const authenticate = require("../../auth");
 
-router.get("/all", (req, res) => {
-  db.user.findAll().then((users) => res.send(users));
+router.get("/all", authenticate, (req, res) => {
+  //db.user.findAll().then((users) => res.send(users));
+  const users = [{ id: 1, name: "Adam" }];
+  res.send(users);
 });
 
 module.exports = router;

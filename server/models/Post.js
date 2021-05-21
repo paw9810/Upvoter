@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       title: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.STRING(500),
         allowNull: false,
       },
       tags: {
