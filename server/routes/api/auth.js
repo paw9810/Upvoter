@@ -3,6 +3,7 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const db = require("../../models");
 const bcrypt = require("bcrypt");
+const jwtDecode = require("jwt-decode");
 
 router.post("/register", async (req, res) => {
   const name = req.body.name;
@@ -58,6 +59,10 @@ router.post("/login", async (req, res) => {
         maxAge: 86400000,
         httpOnly: true,
       });
+      res.cookie("JWTREFRESH", refreshToken, {
+        maxAge: 86400000,
+        httpOnly: true,
+      });
       res.status(200).send({ accessToken, refreshToken });
     } else {
       res.status(401).send("invalid password");
@@ -68,11 +73,8 @@ router.post("/login", async (req, res) => {
 });
 
 router.post("/refresh", async (req, res) => {
-  const refreshToken = req.body.token;
-
-  if (!refreshToken) {
-    return res.sendStatus(401);
-  }
+  const refreshToken = req.cookies.JWTREFRESH;
+  if (refreshToken === null) return res.sendStatus(401);
 
   // TODO: check if refreshToken exists in DB
   try {
@@ -80,11 +82,16 @@ router.post("/refresh", async (req, res) => {
   } catch (err) {
     return res.sendStatus(403);
   }
+  const decoded = jwtDecode(refreshToken);
 
-  const accessToken = jwt.sign({ id: 1 }, process.env.TOKEN_SECRET, {
+  const accessToken = jwt.sign({ id: decoded.id }, process.env.TOKEN_SECRET, {
     expiresIn: 86400,
   });
 
+  res.cookie("JWT", accessToken, {
+    maxAge: 86400000,
+    httpOnly: true,
+  });
   res.send({ accessToken });
 });
 
