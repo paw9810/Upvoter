@@ -17,3 +17,6 @@ Content-Type: : application/json
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjIxNTk4Njk5LCJleHAiOjE2MjIxMjQyOTl9.xXgjSgrEx4uImr4rWjK5i7xtvH8JjYlQ_11cqsYAUKM"
 }
 
+###
+GET http://localhost:5000/posts/1
+

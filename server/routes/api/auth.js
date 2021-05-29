@@ -27,7 +27,6 @@ router.post("/register", async (req, res) => {
       return res.sendStatus(401);
     }
   } else return res.sendStatus(400);
-  //const validPassword = await bcrypt.compare(password, user[0].password);
 
   return res.status(201).send(`successfully registered ${name}`);
 });
@@ -43,7 +42,7 @@ router.post("/login", async (req, res) => {
 
     if (validPassword) {
       const accessToken = jwt.sign({ id: user.id }, process.env.TOKEN_SECRET, {
-        expiresIn: 20,
+        expiresIn: 86400,
       });
       const refreshToken = jwt.sign(
         { id: user.id },
@@ -63,7 +62,7 @@ router.post("/login", async (req, res) => {
         maxAge: 86400000,
         httpOnly: true,
       });
-      res.status(200).send({ accessToken, refreshToken });
+      res.status(200).send("successfully logged in");
     } else {
       res.status(401).send("invalid password");
     }
