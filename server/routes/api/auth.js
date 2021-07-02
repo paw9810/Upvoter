@@ -1,9 +1,10 @@
 const express = require("express");
-const router = express.Router();
 const jwt = require("jsonwebtoken");
 const db = require("../../models");
 const bcrypt = require("bcrypt");
 const jwtDecode = require("jwt-decode");
+
+const router = express.Router();
 
 router.post("/register", async (req, res) => {
   const name = req.body.name;

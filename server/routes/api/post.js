@@ -6,14 +6,18 @@ const jwtDecode = require("jwt-decode");
 
 router.get("/:postId", async (req, res) => {
   const postId = req.params.postId;
-  const post = await db.post.findOne({ where: { id: postId } });
+  try {
+    const post = await db.post.findOne({ where: { id: postId } });
 
-  res.status(200).json({
-    title: post.title,
-    location: post.location,
-    tags: post.tags,
-    rating: post.rating,
-  });
+    res.status(200).json({
+      title: post.title,
+      location: post.location,
+      tags: post.tags,
+      rating: post.rating,
+    });
+  } catch (err) {
+    res.status(404).send("post not found");
+  }
 });
 
 router.post("/addPost", authenticate, async (req, res) => {
