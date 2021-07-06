@@ -3,6 +3,7 @@ const db = require("../models");
 const bcrypt = require("bcrypt");
 const jwtDecode = require("jwt-decode");
 const { body, validationResult } = require("express-validator");
+const authService = require("../services/auth.service");
 
 exports.register = async (req, res) => {
   try {
@@ -36,6 +37,11 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
     const name = req.body.name;
     const password = req.body.password;
 
@@ -81,7 +87,7 @@ exports.login = async (req, res) => {
       res.status(401).send("user does not exist");
     }
   } catch (err) {
-    console.log(err);
+    res.status(400).send(err.message);
   }
 };
 
@@ -90,11 +96,11 @@ exports.refresh = async (req, res) => {
     const refreshToken = req.cookies.JWTREFRESH;
     if (refreshToken === null) return res.sendStatus(401);
 
-    // TODO: check if refreshToken exists in DB
+    const decoded = jwtDecode(refreshToken);
+
+    await authService.isTokenInDb(decoded.id);
 
     await jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-
-    const decoded = jwtDecode(refreshToken);
 
     const accessToken = jwt.sign({ id: decoded.id }, process.env.TOKEN_SECRET, {
       // expiresIn: 86400,
@@ -107,6 +113,6 @@ exports.refresh = async (req, res) => {
     });
     res.send({ accessToken });
   } catch (err) {
-    return res.status(403).send(err);
+    return res.status(403).send(err.message);
   }
 };
