@@ -2,16 +2,15 @@ import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 
-const Pagination = ({ pages }) => {
+const Pagination = ({ pages, handlePage }) => {
   const buttons = [];
   for (let i = 0; i < pages; i++) {
     buttons.push(
-      <Button key={i} variant="outlined">
+      <Button onClick={handlePage} key={i} variant="outlined" value={i + 1}>
         {i + 1}
       </Button>
     );
   }
-  console.log(buttons);
 
   // TODO: show fewer pages when many
   // if (pages > 3) return (

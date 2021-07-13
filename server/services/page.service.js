@@ -15,5 +15,7 @@ exports.getPage = async (page = 1) => {
     offset: skip,
     limit: PAGE_SIZE,
   });
-  return result;
+  let count = await db.post.count();
+  count = Math.ceil(count / 5);
+  return [result, count];
 };
