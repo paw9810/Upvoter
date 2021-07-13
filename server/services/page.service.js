@@ -8,7 +8,7 @@ exports.getPage = async (page = 1) => {
     include: [
       {
         model: db.user,
-        attributes: ["name"],
+        attributes: ["name", "imageLocation"],
       },
     ],
     order: [["updatedAt", "DESC"]],

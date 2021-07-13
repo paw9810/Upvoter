@@ -1,5 +1,10 @@
-const db = require("../models");
-
-exports.getUsers = (req, res) => {
-  db.user.findAll().then((users) => res.send(users));
+const userService = require("../services/user.service");
+exports.getUser = async (req, res) => {
+  try {
+    const username = req.params.username;
+    const user = await userService.getUser(username);
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(404).send(err.message);
+  }
 };
