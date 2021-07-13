@@ -1,7 +1,7 @@
 const db = require("../models");
 
 exports.getPost = async (postId) => {
-  return db.post.findOne({ where: { id: postId } });
+  return await db.post.findOne({ where: { id: postId } });
 };
 
 exports.createPost = async (title, location, tags, rating, userId) => {

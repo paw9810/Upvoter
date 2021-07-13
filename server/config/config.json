@@ -12,7 +12,7 @@
   "test": {
     "username": "root",
     "password": "root",
-    "database": "upvoter",
+    "database": "upvoter_test",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "logging": false,

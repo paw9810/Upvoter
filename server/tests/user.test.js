@@ -2,6 +2,10 @@ const request = require("supertest");
 const app = require("../app");
 const db = require("../models");
 
+afterAll(async () => {
+  return await db.sequelize.sync({ force: true });
+});
+
 describe("GET /users/all unauthenticated", () => {
   test("should respond with 403 status code", async () => {
     const response = await request(app).get("/users/all");
