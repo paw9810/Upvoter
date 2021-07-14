@@ -117,7 +117,7 @@ const Header = ({ location }) => {
                   </Link>
                 )}
                 {isAuthenticated && (
-                  <Link to="/" className={classes.links}>
+                  <Link to="/addPost" className={classes.links}>
                     <ListItem button>
                       <ListItemIcon>
                         <AddCircleIcon />

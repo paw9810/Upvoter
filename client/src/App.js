@@ -10,6 +10,7 @@ import MainView from "./views/MainView";
 import ProfileView from "./views/ProfileView";
 import LoginView from "./views/LoginView";
 import RegisterView from "./views/RegisterView";
+import AddPostView from "./views/AddPostView";
 import axios from "axios";
 import { API } from "./config";
 import { useState, useEffect } from "react";
@@ -58,6 +59,9 @@ const App = () => {
           </Route>
           <Route exact path="/logout">
             <Redirect to="/p/1" />
+          </Route>
+          <Route exact path="/addPost">
+            <AddPostView />
           </Route>
         </Switch>
       </Router>
