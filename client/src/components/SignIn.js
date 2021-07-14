@@ -41,7 +41,9 @@ const SignIn = () => {
   const { control, handleSubmit } = useForm();
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post("/auth/login", data);
+      const response = await axios.post("/auth/login", data, {
+        withCredentials: true,
+      });
       setUser(response.data.user);
       setIsAuthenticated(true);
       alert(`successfully logged in ${response.data.user}`);

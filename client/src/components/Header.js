@@ -20,6 +20,7 @@ import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import AuthContext from "../contexts/authContext";
+import axios from "axios";
 
 const useStyles = makeStyles({
   margin: {
@@ -32,7 +33,8 @@ const useStyles = makeStyles({
 });
 
 const Header = ({ location }) => {
-  const { user, isAuthenticated } = useContext(AuthContext);
+  const { user, setUser, isAuthenticated, setIsAuthenticated } =
+    useContext(AuthContext);
   const [menuState, setMenuState] = useState(false);
   const classes = useStyles();
 
@@ -44,6 +46,18 @@ const Header = ({ location }) => {
       return;
     }
     setMenuState(open);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await axios.post("/auth/logout", undefined, { withCredentials: true });
+      setUser("guest");
+      setIsAuthenticated(false);
+    } catch (err) {
+      setUser("guest");
+      setIsAuthenticated(false);
+      console.log(err);
+    }
   };
 
   return (
@@ -113,7 +127,11 @@ const Header = ({ location }) => {
                   </Link>
                 )}
                 {isAuthenticated && (
-                  <Link to="/" className={classes.links}>
+                  <Link
+                    onClick={handleLogout}
+                    to="/logout"
+                    className={classes.links}
+                  >
                     <ListItem button>
                       <ListItemIcon>
                         <ExitToAppIcon />

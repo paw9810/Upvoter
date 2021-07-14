@@ -12,7 +12,7 @@ import LoginView from "./views/LoginView";
 import RegisterView from "./views/RegisterView";
 import axios from "axios";
 import { API } from "./config";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AuthContext from "./contexts/authContext";
 
 axios.defaults.baseURL = API;
@@ -21,6 +21,18 @@ const App = () => {
   const [user, setUser] = useState("guest");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const value = { user, setUser, isAuthenticated, setIsAuthenticated };
+
+  useEffect(() => {
+    setUser(localStorage.getItem("user") || "guest");
+    setIsAuthenticated(
+      localStorage.getItem("isAuthenticated") === "true" || false
+    );
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("user", user);
+    localStorage.setItem("isAuthenticated", isAuthenticated);
+  }, [user, isAuthenticated]);
   return (
     <AuthContext.Provider value={value}>
       <Router>
@@ -43,6 +55,9 @@ const App = () => {
           </Route>
           <Route exact path="/signup">
             <RegisterView />
+          </Route>
+          <Route exact path="/logout">
+            <Redirect to="/p/1" />
           </Route>
         </Switch>
       </Router>

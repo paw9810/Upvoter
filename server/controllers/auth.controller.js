@@ -115,7 +115,7 @@ exports.refresh = async (req, res) => {
       maxAge: 86400000,
       httpOnly: true,
     });
-    res.send({ accessToken });
+    res.sendStatus(200);
   } catch (err) {
     return res.status(403).send(err.message);
   }
@@ -124,12 +124,11 @@ exports.refresh = async (req, res) => {
 exports.logout = async (req, res) => {
   try {
     const refreshToken = req.cookies.JWTREFRESH;
-
     await authService.deleteRefreshToken(refreshToken);
     res.clearCookie("JWT");
     res.clearCookie("JWTREFRESH");
 
-    res.redirect("/");
+    res.status(200).send("Successfully logged out");
   } catch (err) {
     res.status(400).send(err.message);
   }
