@@ -4,14 +4,14 @@ exports.getPage = async (page = 1) => {
   const PAGE_SIZE = 5;
   const skip = (page - 1) * PAGE_SIZE;
   const result = await db.post.findAll({
-    attributes: ["title", "location", "tags", "rating", "createdAt"],
+    attributes: ["id", "title", "location", "tags", "rating", "createdAt"],
     include: [
       {
         model: db.user,
-        attributes: ["name", "imageLocation"],
+        attributes: ["id", "name", "imageLocation"],
       },
     ],
-    order: [["updatedAt", "DESC"]],
+    order: [["createdAt", "DESC"]],
     offset: skip,
     limit: PAGE_SIZE,
   });

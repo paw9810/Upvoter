@@ -2,11 +2,11 @@ const db = require("../models");
 
 exports.getPost = async (postImage) => {
   const result = await db.post.findOne({
-    attributes: ["title", "location", "tags", "rating", "createdAt"],
+    attributes: ["id", "title", "location", "tags", "rating", "createdAt"],
     include: [
       {
         model: db.user,
-        attributes: ["name", "imageLocation"],
+        attributes: ["id", "name", "imageLocation"],
       },
     ],
     where: { location: postImage },

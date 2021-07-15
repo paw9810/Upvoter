@@ -4,6 +4,6 @@ const authenticate = require("../utils/auth");
 
 const router = express.Router();
 
-router.get("/all", authenticate, voteController.getVotes);
+router.post("/vote", authenticate, voteController.vote);
 
 module.exports = router;
