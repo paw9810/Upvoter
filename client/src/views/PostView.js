@@ -70,7 +70,7 @@ const PostView = () => {
 
   if (data === null) return null;
   return (
-    <div>
+    <div style={{ marginBottom: 50 }}>
       <Header location="Post" />
       {loaded && <Post data={data} imgPath={postImagePath + data.location} />}
       <Container component="main" maxWidth="xs">

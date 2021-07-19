@@ -15,6 +15,8 @@ import { useState } from "react";
 import axios from "axios";
 import AuthContext from "../contexts/authContext";
 import { useContext } from "react";
+import { useForm, Controller } from "react-hook-form";
+import TextField from "@material-ui/core/TextField";
 
 const useStyles = makeStyles({
   media: {
@@ -28,9 +30,15 @@ const useStyles = makeStyles({
 
 const Comment = ({ data, getTopComments }) => {
   const { userId } = useContext(AuthContext);
+  const { control, handleSubmit } = useForm();
   const classes = useStyles();
+  const [answerVisible, setAnswerVisible] = useState(false);
   const [comments, setComments] = useState([]);
   const profileImagePath = `${API}/media/profile/`;
+
+  const handleAnswer = () => {
+    setAnswerVisible(!answerVisible);
+  };
 
   const handleChildren = async () => {
     try {
@@ -42,12 +50,30 @@ const Comment = ({ data, getTopComments }) => {
       console.log(err);
     }
   };
+
   const handleDelete = async () => {
     try {
       await axios.delete(`/comments/delete?commentId=${data.id}`, {
         withCredentials: true,
       });
       getTopComments(data.postId);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const onSubmit = async (form) => {
+    try {
+      const formData = {
+        parentComment: data.id,
+        text: form.text,
+        userId: userId,
+        postId: data.postId,
+      };
+      await axios.post("/comments/addComment", formData, {
+        withCredentials: true,
+      });
+      await handleChildren();
     } catch (err) {
       console.log(err);
     }
@@ -82,10 +108,47 @@ const Comment = ({ data, getTopComments }) => {
               {data.text}
             </Typography>
           </CardContent>
-          {data.hasChildren && <Divider />}
+          <Divider />
           {data.hasChildren && (
             <Button onClick={handleChildren}>Show answers</Button>
           )}
+          <Button onClick={handleAnswer}>Answer</Button>
+          {answerVisible && (
+            <Container component="main" maxWidth="xs">
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <Controller
+                  name="text"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      autoComplete="text"
+                      variant="outlined"
+                      required
+                      margin="normal"
+                      fullWidth
+                      name="text"
+                      label="Comment"
+                      id="text"
+                      multiline
+                      rows={2}
+                    />
+                  )}
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                >
+                  Add comment
+                </Button>
+              </form>
+            </Container>
+          )}
+
+          <Divider />
           {comments.map((comment, i) => (
             <Comment key={i} data={comment} />
           ))}
