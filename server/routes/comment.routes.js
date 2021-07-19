@@ -9,4 +9,6 @@ router.get("/getTopComments", commentController.getTopComments);
 
 router.get("/getChildComments", commentController.getChildComments);
 
+router.delete("/delete", authenticate, commentController.deleteComment);
+
 module.exports = router;

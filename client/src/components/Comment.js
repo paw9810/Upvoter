@@ -13,6 +13,8 @@ import { API } from "../config";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import AuthContext from "../contexts/authContext";
+import { useContext } from "react";
 
 const useStyles = makeStyles({
   media: {
@@ -24,7 +26,8 @@ const useStyles = makeStyles({
   },
 });
 
-const Comment = ({ data }) => {
+const Comment = ({ data, getTopComments }) => {
+  const { userId } = useContext(AuthContext);
   const classes = useStyles();
   const [comments, setComments] = useState([]);
   const profileImagePath = `${API}/media/profile/`;
@@ -35,6 +38,16 @@ const Comment = ({ data }) => {
         `/comments/getChildComments?postId=${data.postId}&parentComment=${data.id}`
       );
       if (response.data.length !== 0) setComments(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const handleDelete = async () => {
+    try {
+      await axios.delete(`/comments/delete?commentId=${data.id}`, {
+        withCredentials: true,
+      });
+      getTopComments(data.postId);
     } catch (err) {
       console.log(err);
     }
@@ -60,6 +73,9 @@ const Comment = ({ data }) => {
               </Typography>
             </CardActions>
           </Link>
+          {data.user.id === parseInt(userId) && (
+            <Button onClick={handleDelete}>Delete</Button>
+          )}
           <Divider />
           <CardContent>
             <Typography variant="body1" component="span">

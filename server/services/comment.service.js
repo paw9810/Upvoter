@@ -72,3 +72,16 @@ exports.getChildComments = async (postId, parentComment) => {
     throw new Error(err);
   }
 };
+
+exports.deleteComment = async (commentId, tokenId) => {
+  try {
+    const comment = await db.comment.findOne({ where: { id: commentId } });
+    if (tokenId === comment.userId) {
+      await comment.destroy();
+    } else {
+      throw new Error("unauthorized");
+    }
+  } catch (err) {
+    throw new Error(err);
+  }
+};

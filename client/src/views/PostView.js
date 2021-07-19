@@ -6,48 +6,103 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { API } from "../config";
 import axios from "axios";
+import { useForm, Controller } from "react-hook-form";
+import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Container from "@material-ui/core/Container";
+import AuthContext from "../contexts/authContext";
+import { useContext } from "react";
 
 const PostView = () => {
+  const { control, handleSubmit } = useForm();
   let { postImage } = useParams();
   const postImagePath = `${API}/media/posts/`;
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   const [comments, setComments] = useState([]);
   const [loaded, setLoaded] = useState(false);
+  const { userId } = useContext(AuthContext);
 
-  const getPost = async (post) => {
+  const onSubmit = async (form) => {
     try {
-      const response = await axios.get(`/posts/p?postImage=${post}`);
-
-      if (response.data.length !== 0) setData(response.data);
+      const formData = {
+        parentComment: null,
+        text: form.text,
+        userId: userId,
+        postId: data.id,
+      };
+      await axios.post("/comments/addComment", formData, {
+        withCredentials: true,
+      });
+      await getTopComments(data.id);
     } catch (err) {
       console.log(err);
     }
   };
 
+  useEffect(() => {
+    const getPost = async (post) => {
+      try {
+        const response = await axios.get(`/posts/p?postImage=${post}`);
+        setData(response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    getPost(postImage);
+    setLoaded(true);
+  }, [postImage]);
   const getTopComments = async (postId) => {
     try {
       const response = await axios.get(
         `/comments/getTopComments?postId=${postId}`
       );
-      if (response.data.length !== 0) setComments(response.data);
+      setComments(response.data);
     } catch (err) {
       console.log(err);
     }
   };
-  const requests = async () => {
-    await getPost(postImage);
-    await getTopComments(data.id);
-    setLoaded(true);
-  };
   useEffect(() => {
-    requests();
-  }, [loaded]);
+    if (data) {
+      getTopComments(data.id);
+    }
+  }, [data]);
 
+  if (data === null) return null;
   return (
     <div>
       <Header location="Post" />
       {loaded && <Post data={data} imgPath={postImagePath + data.location} />}
-      {loaded && <CommentSection comments={comments} />}
+      <Container component="main" maxWidth="xs">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Controller
+            name="text"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                autoComplete="text"
+                variant="outlined"
+                required
+                margin="normal"
+                fullWidth
+                name="text"
+                label="Comment"
+                id="text"
+                multiline
+                rows={2}
+              />
+            )}
+          />
+          <Button type="submit" fullWidth variant="contained" color="primary">
+            Add comment
+          </Button>
+        </form>
+      </Container>
+      {loaded && (
+        <CommentSection comments={comments} getTopComments={getTopComments} />
+      )}
     </div>
   );
 };
