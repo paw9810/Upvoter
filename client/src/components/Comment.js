@@ -28,7 +28,7 @@ const useStyles = makeStyles({
   },
 });
 
-const Comment = ({ data, getTopComments }) => {
+const Comment = ({ data, getTopComments, getDeleted }) => {
   const { userId } = useContext(AuthContext);
   const { control, handleSubmit } = useForm();
   const classes = useStyles();
@@ -45,7 +45,18 @@ const Comment = ({ data, getTopComments }) => {
       const response = await axios.get(
         `/comments/getChildComments?postId=${data.postId}&parentComment=${data.id}`
       );
-      if (response.data.length !== 0) setComments(response.data);
+      setComments(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getCommentsOnDelete = async () => {
+    try {
+      const response = await axios.get(
+        `/comments/getChildComments?postId=${data.postId}&parentComment=${data.id}`
+      );
+      setComments(response.data);
     } catch (err) {
       console.log(err);
     }
@@ -56,7 +67,11 @@ const Comment = ({ data, getTopComments }) => {
       await axios.delete(`/comments/delete?commentId=${data.id}`, {
         withCredentials: true,
       });
-      getTopComments(data.postId);
+      if (data.parentComment) {
+        await getDeleted();
+      } else {
+        getTopComments(data.postId);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -150,7 +165,7 @@ const Comment = ({ data, getTopComments }) => {
 
           <Divider />
           {comments.map((comment, i) => (
-            <Comment key={i} data={comment} />
+            <Comment key={i} data={comment} getDeleted={getCommentsOnDelete} />
           ))}
         </Card>
       </Container>

@@ -98,6 +98,17 @@ exports.deleteComment = async (commentId, tokenId) => {
       if (comment.hasChildren === true) {
         await deleteChildren(comment.id);
       }
+      if (comment.parentComment) {
+        const children = await db.comment.count({
+          where: { parentComment: comment.parentComment },
+        });
+        if (children === 1) {
+          await db.comment.update(
+            { hasChildren: false },
+            { where: { id: comment.parentComment } }
+          );
+        }
+      }
       await comment.destroy();
     } else {
       throw new Error("unauthorized");
