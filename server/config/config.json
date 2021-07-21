@@ -24,11 +24,8 @@
     "username": "root",
     "password": "root",
     "database": "database_production",
-    "host": "localhost",
+    "host": "34.116.222.98",
     "dialect": "mysql",
-    "dialectOptions": {
-      "socketPath": "/cloudsql/upvoter-320413:europe-central2:root"
-    },
     "define": {
       "freezeTableName": "true"
     }
