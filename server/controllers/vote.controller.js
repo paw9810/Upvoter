@@ -12,25 +12,31 @@ exports.vote = async (req, res) => {
     if (voteType === null) {
       if (upvote) {
         const result = await voteService.createVote("up", userId, postId);
+        await voteService.updateKarma(userId);
         res.status(201).json({ result: result });
       } else {
         const result = await voteService.createVote("down", userId, postId);
+        await voteService.updateKarma(userId);
         res.status(201).json({ result: result });
       }
     } else if (voteType === "down") {
       if (upvote) {
         const result = await voteService.updateVote("up", voteId, postId);
+        await voteService.updateKarma(userId);
         res.status(201).json({ result: result });
       } else {
         const result = await voteService.deleteVote("down", userId, postId);
+        await voteService.updateKarma(userId);
         res.status(201).json({ result: result });
       }
     } else if (voteType === "up") {
       if (upvote) {
         const result = await voteService.deleteVote("up", userId, postId);
+        await voteService.updateKarma(userId);
         res.status(201).json({ result: result });
       } else {
         const result = await voteService.updateVote("down", voteId, postId);
+        await voteService.updateKarma(userId);
         res.status(201).json({ result: result });
       }
     }

@@ -67,3 +67,16 @@ exports.deleteVote = async (voteType, userId, postId) => {
   const refreshed = await post.reload();
   return refreshed.rating;
 };
+
+exports.updateKarma = async (userId) => {
+  const userPosts = await db.post.findAll({
+    where: { userId: userId },
+    attributes: ["rating"],
+  });
+
+  const karma = userPosts
+    .map((post) => post.rating)
+    .reduce((acc, value) => acc + value);
+
+  await db.user.update({ karma: karma }, { where: { id: userId } });
+};
