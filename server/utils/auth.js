@@ -5,10 +5,11 @@ const authenticate = (req, res, next) => {
   // const token = authHeader && authHeader.split(" ")[1];
 
   const token = req.cookies.JWT;
-  if (token === null) return res.sendStatus(401);
+
+  if (token === undefined) return res.status(403).send("Forbidden");
 
   jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
+    if (err) return res.status(403).send("invalid access token");
 
     req.user = user;
     next();

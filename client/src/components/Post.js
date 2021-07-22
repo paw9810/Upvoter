@@ -58,7 +58,6 @@ const Post = ({ data, imgPath }) => {
       setRating(response.data.result);
     } catch (err) {
       alert.show("You have to be logged in to vote");
-      console.log(err);
     }
   };
 

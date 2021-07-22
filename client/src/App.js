@@ -14,6 +14,20 @@ import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
 
 axios.defaults.baseURL = API;
+axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response.data === "invalid access token") {
+      await axios.post("/auth/refresh", null, {
+        withCredentials: true,
+      });
+      return axios(originalRequest);
+    } else {
+      return Promise.reject(error);
+    }
+  }
+);
 
 const App = () => {
   const [userId, setUserId] = useState(null);
