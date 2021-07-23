@@ -76,7 +76,7 @@ exports.updateKarma = async (userId) => {
 
   const karma = userPosts
     .map((post) => post.rating)
-    .reduce((acc, value) => acc + value);
+    .reduce((acc, value) => acc + value, 0);
 
   await db.user.update({ karma: karma }, { where: { id: userId } });
 };
